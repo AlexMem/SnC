@@ -12,14 +12,16 @@
             tools:layout="@layout/fragment_home"/>
 
     <fragment
-            android:id="@+id/nav_gallery"
-            android:name="com.eltech.snc.ui.gallery.GalleryFragment"
-            android:label="@string/menu_gallery"
-            tools:layout="@layout/fragment_gallery"/>
+            android:id="@+id/nav_copy_image"
+            android:name="com.eltech.snc.ui.image_copying.ImageCopyingFragment"
+            android:label="@string/menu_copy_image"
+            tools:layout="@layout/fragment_image_copying"/>
 
     <fragment
-            android:id="@+id/nav_slideshow"
-            android:name="com.eltech.snc.ui.slideshow.SlideshowFragment"
-            android:label="@string/menu_slideshow"
-            tools:layout="@layout/fragment_slideshow"/>
+            android:id="@+id/nav_labyrinth"
+            android:name="com.eltech.snc.ui.labyrinth.LabyrinthFragment"
+            android:label="@string/menu_labyrinth"
+            tools:layout="@layout/fragment_labyrinth"/>
+    <fragment android:id="@+id/nav_platform" android:name="com.eltech.snc.ui.platform.PlatformFragment"
+              android:label="@string/menu_platform" tools:layout="@layout/fragment_platform"/>
 </navigation>
