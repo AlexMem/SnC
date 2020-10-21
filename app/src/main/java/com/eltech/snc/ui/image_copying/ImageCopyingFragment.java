@@ -29,7 +29,7 @@ public class ImageCopyingFragment extends Fragment {
     private static final String BEFORE = "Совпадение ?%";
     private static final String RESULT_FORMAT = "Совпадение %.1f%%";
     private static final int CALC_STEP = 4;
-    private static final float VALID_ERROR = 2.7f;
+    private static final float VALID_ERROR = 2.75f;
     private static final Random RANDOMIZER = new Random();
     private static final List<Integer> PATTERNS_IDS = Arrays.asList(R.drawable.cloud_thin, R.drawable.flower,
                                                                     R.drawable.flag, R.drawable.map, R.drawable.pin);
@@ -100,7 +100,7 @@ public class ImageCopyingFragment extends Fragment {
             }
         }
         shouldBePainted /= VALID_ERROR;
-        float result = Math.max(notMissed - missed, 0) / (float) shouldBePainted;
+        float result = Math.min(Math.max(notMissed - missed, 0), shouldBePainted) / (float) shouldBePainted;
         System.out.println("Should " + shouldBePainted + ", not missed " + notMissed + ", missed " + missed + ", result " + result);
         return result;
     }
