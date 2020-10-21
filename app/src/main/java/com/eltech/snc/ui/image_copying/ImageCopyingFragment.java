@@ -1,10 +1,13 @@
 package com.eltech.snc.ui.image_copying;
 
+import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -16,10 +19,21 @@ import androidx.lifecycle.ViewModelProviders;
 import com.divyanshu.draw.widget.DrawView;
 import com.eltech.snc.R;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 public class ImageCopyingFragment extends Fragment {
+    private static final String EXPLANATION = "Обведите изображение не отрывая пальца";
+    private static final String BEFORE = "Совпадение ?%";
     private static final String RESULT_FORMAT = "Совпадение %.1f%%";
     private static final int CALC_STEP = 4;
-    private static final float VALID_ERROR = 2.5f;
+    private static final float VALID_ERROR = 2.7f;
+    private static final Random RANDOMIZER = new Random();
+    private static final List<Integer> PATTERNS_IDS = Arrays.asList(R.drawable.cloud_thin, R.drawable.flower,
+                                                                    R.drawable.flag, R.drawable.map, R.drawable.pin);
+    private static final List<Drawable> patternsDrawables = new ArrayList<>();
 
     private ImageCopyingViewModel imageCopyingViewModel;
     private TextView resultText;
@@ -27,26 +41,39 @@ public class ImageCopyingFragment extends Fragment {
     private DrawView drawView;
     private ImageButton refreshButton;
 
+    @SuppressLint("ClickableViewAccessibility")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         imageCopyingViewModel = ViewModelProviders.of(this).get(ImageCopyingViewModel.class);
         View root = inflater.inflate(R.layout.fragment_image_copying, container, false);
 
         resultText = root.findViewById(R.id.resultText);
+        resultText.setText(BEFORE);
 
         targetImageView = root.findViewById(R.id.targetImage);
         targetImageView.setDrawingCacheEnabled(true);
 
         drawView = root.findViewById(R.id.draw_view);
         drawView.setBackgroundColor(Color.TRANSPARENT);
+        drawView.setOnTouchListener((v, event) -> {
+            drawView.onTouchEvent(event);
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                processImages();
+            }
+            return true;
+        });
 
         refreshButton = root.findViewById(R.id.refreshButton);
-        refreshButton.setOnClickListener(v -> {
-            Bitmap drawnImage = drawView.getBitmap();
-            Bitmap targetImage = targetImageView.getDrawingCache();
-            float result = calculateResult(targetImage, drawnImage);
-            resultText.setText(String.format(RESULT_FORMAT, 100*result));
-        });
+        refreshButton.setOnClickListener(v -> refreshModule());
+
+        if (patternsDrawables.isEmpty()) {
+            Resources resources = getResources();
+            for (Integer patternsId : PATTERNS_IDS) {
+                patternsDrawables.add(resources.getDrawable(patternsId, null));
+            }
+        }
+        targetImageView.setImageDrawable(getRandomPattern());
+
         return root;
     }
 
@@ -76,5 +103,28 @@ public class ImageCopyingFragment extends Fragment {
         float result = Math.max(notMissed - missed, 0) / (float) shouldBePainted;
         System.out.println("Should " + shouldBePainted + ", not missed " + notMissed + ", missed " + missed + ", result " + result);
         return result;
+    }
+
+    private void refreshModule() {
+        targetImageView.destroyDrawingCache();
+        targetImageView.setImageDrawable(getRandomPattern());
+        drawView.clearCanvas();
+        drawView.setAlpha(100);
+        drawView.setEnabled(true);
+        resultText.setText(BEFORE);
+    }
+
+    private void processImages() {
+        System.out.println("Processing image ...");
+        drawView.setEnabled(false);
+        drawView.setAlpha(0);
+        Bitmap drawnImage = drawView.getBitmap();
+        Bitmap targetImage = targetImageView.getDrawingCache();
+        float result = calculateResult(targetImage, drawnImage);
+        resultText.setText(String.format(RESULT_FORMAT, 100 * result));
+    }
+
+    private Drawable getRandomPattern() {
+        return patternsDrawables.get(RANDOMIZER.nextInt(patternsDrawables.size()));
     }
 }
