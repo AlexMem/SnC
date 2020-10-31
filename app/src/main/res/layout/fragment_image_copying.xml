@@ -5,14 +5,41 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.image_copying.ImageCopyingFragment">
+        tools:context=".ui.image_copying.ImageCopyingFragment" android:id="@+id/baseLayout">
 
-    <ImageView
-            android:src="@mipmap/copy_image_example_foreground"
-            android:layout_width="0dp"
-            android:layout_height="0dp" android:id="@+id/imageView3"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-    />
+
+    <TextView
+            android:text="Совпадение"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/resultText"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toTopOf="@id/imageCascadeLayout"
+            android:layout_marginTop="8dp" android:textSize="30sp"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/resultText" app:layout_constraintBottom_toTopOf="@id/refreshButton"
+            android:id="@+id/imageCascadeLayout" app:layout_constraintDimensionRatio="1:1">
+        <ImageView
+                android:layout_width="0dp"
+                android:layout_height="0dp" android:id="@+id/targetImage"
+                android:src="@drawable/cloud_thin"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent"/>
+        <com.divyanshu.draw.widget.DrawView
+                android:id="@+id/draw_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageButton
+            android:src="@android:drawable/stat_notify_sync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/refreshButton"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageCascadeLayout" app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="16dp" android:layout_marginTop="8dp" android:scaleX="1.5" android:scaleY="1.5"
+            android:tint="#000000"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
