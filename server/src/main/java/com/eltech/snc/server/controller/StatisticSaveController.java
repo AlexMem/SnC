@@ -21,17 +21,17 @@ public class StatisticSaveController {
     }
 
     @PostMapping(value = "/saveMazeStatistic", consumes = "application/json", produces = "application/json")
-    public Integer createUser(@RequestBody MazeEntity statistic) {
+    public Integer saveStatistic(@RequestBody MazeEntity statistic) {
         return statisticService.saveMazeStatistic(statistic);
     }
 
     @PostMapping(value = "/saveStencilStatistic", consumes = "application/json", produces = "application/json")
-    public Integer createUser(@RequestBody StencilEntity statistic) {
+    public Integer saveStatistic(@RequestBody StencilEntity statistic) {
         return statisticService.saveStencilStatistic(statistic);
     }
 
     @PostMapping(value = "/saveRollingBallStatistic", consumes = "application/json", produces = "application/json")
-    public Integer createUser(@RequestBody RollingBallEntity statistic) {
+    public Integer saveStatistic(@RequestBody RollingBallEntity statistic) {
         return statisticService.saveRollingBallStatistic(statistic);
     }
 }
