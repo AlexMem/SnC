@@ -5,13 +5,41 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.labyrinth.LabyrinthFragment">
-    <ImageView
-            android:src="@mipmap/labyrinth_foreground"
+        tools:context=".ui.maze.MazeFragment">
+    <TextView
+            android:text="Timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/resultTimer" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/mazeWrapper"
+            android:layout_marginTop="24dp" android:textSize="30sp"/>
+    <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="0dp" android:id="@+id/imageView2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-    />
+            android:layout_height="0dp"
+            android:id="@+id/mazeWrapper"
+            app:layout_constraintTop_toBottomOf="@+id/resultTimer" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toTopOf="@+id/newMazeButton"
+    >
+
+        <ImageView
+                android:src="@drawable/start_point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/startPoint"
+                app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="0dp" android:scaleType="centerInside"
+                android:cropToPadding="false" android:adjustViewBounds="true"/>
+        <ImageView
+                android:src="@drawable/finish_point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/finishPoint"/>
+    </FrameLayout>
+    <ImageButton
+            android:src="@android:drawable/stat_notify_sync"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/newMazeButton"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mazeWrapper"
+            android:layout_marginBottom="24dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
