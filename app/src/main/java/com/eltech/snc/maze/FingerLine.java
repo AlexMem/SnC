@@ -5,7 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -15,6 +17,9 @@ import com.eltech.snc.R;
 import com.eltech.snc.ui.maze.MazeFragment;
 
 import java.util.ArrayList;
+
+import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
+import static com.eltech.snc.ui.maze.MazeFragment.FAT_FINGERS_MARGIN;
 
 /**
  * View of the line the user draws with their finger.
@@ -26,7 +31,12 @@ public class FingerLine extends View {
     private int solutionCellsVisited;
     private ArrayList<Boolean> solved;
     private boolean solvedMaze;
+    private boolean stopDrawing;
     private EndingEventListener endingEventListener;
+    private float finishPointXL;
+    private float finishPointXR;
+    private float finishPointYT;
+    private float finishPointYB;
 
     public FingerLine(Context context) {
         this(context, null);
@@ -57,6 +67,7 @@ public class FingerLine extends View {
         solutionCellsVisited = 0;
 
         solvedMaze = false;
+        stopDrawing = false;
 
         solved = new ArrayList<>();
 
@@ -73,6 +84,10 @@ public class FingerLine extends View {
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
+        if (stopDrawing) {
+            return true;
+        }
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mPath.moveTo(event.getX(), event.getY());
@@ -99,15 +114,29 @@ public class FingerLine extends View {
             if (xInCell && yInCell) {
                 solved.set(i, true);
 
-                if (!solved.contains(false) && !solvedMaze) {
-                    endingEventListener.onEndingEvent();
-                    Toast.makeText(this.getContext(), R.string.maze_solved, Toast.LENGTH_SHORT).show();
+                if (!solvedMaze && !solved.contains(false)) {
                     solvedMaze = true;
-                    return true; // not sure it this line is necessary
                 }
             }
         }
+
+        if (finishPointXL <= event.getX() && event.getX() <= finishPointXR &&
+                finishPointYT <= event.getY() && event.getY() <= finishPointYB) {
+            stopDrawing = true;
+            endingEventListener.onEndingEvent(isMazeSolved());
+        }
         return true;
+    }
+
+    private boolean isMazeSolved() {
+        return solvedMaze;
+    }
+
+    public void setFinishPointCoords(float x, float y) {
+        finishPointXL = x - FAT_FINGERS_MARGIN;
+        finishPointXR = x + FAT_FINGERS_MARGIN;
+        finishPointYT = y - FAT_FINGERS_MARGIN;
+        finishPointYB = y + FAT_FINGERS_MARGIN;
     }
 
     public void setEndingEventListener(EndingEventListener endingEventListener) {

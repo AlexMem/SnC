@@ -2,6 +2,7 @@ package com.eltech.snc.ui.maze;
 
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import com.eltech.snc.R;
@@ -18,8 +20,10 @@ import com.eltech.snc.maze.EndingEventListener;
 import com.eltech.snc.maze.FingerLine;
 import com.eltech.snc.maze.MazeView;
 
+import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
+
 public class MazeFragment extends Fragment implements EndingEventListener {
-    private static final int FAT_FINGERS_MARGIN = 25;
+    public static final int FAT_FINGERS_MARGIN = 25;
     private static final int PADDING = 64;
     private static final int mazeSize = 10;
 
@@ -107,20 +111,17 @@ public class MazeFragment extends Fragment implements EndingEventListener {
         int endCellStrawberryY = solutionAreas[0][1] + 10 + FAT_FINGERS_MARGIN;
         finishPoint.setX(endCellStrawberryX);
         finishPoint.setY(endCellStrawberryY);
-        finishPoint.setVisibility(View.VISIBLE);;
-    }
-
-    private void startGameSolvedAnimation() {
-        final Animation animation = new AlphaAnimation(1, 0);
-        animation.setDuration(700);
-        animation.setInterpolator(new LinearInterpolator());
-        animation.setRepeatCount(3);
-        animation.setRepeatMode(Animation.REVERSE);
-        finishPoint.startAnimation(animation);
+        finishPoint.setVisibility(View.VISIBLE);
+        mFingerLine.setFinishPointCoords(finishPoint.getX(), finishPoint.getY());
     }
 
     @Override
-    public void onEndingEvent() {
-        startGameSolvedAnimation();
+    public void onEndingEvent(boolean isMazeSolved) {
+        Log.d(TAG, "onEndingEvent: " + isMazeSolved);
+        if (isMazeSolved) {
+            Toast.makeText(this.getContext(), R.string.maze_solved, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this.getContext(), R.string.maze_not_solved, Toast.LENGTH_SHORT).show();
+        }
     }
 }

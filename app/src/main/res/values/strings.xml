@@ -13,6 +13,7 @@
     <string name="menu_platform">Platform</string>
 
     <string name="maze_solved">Maze solved!</string>
+    <string name="maze_not_solved">Maze not solved!</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
