@@ -5,12 +5,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
-import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import com.eltech.snc.R;
@@ -18,7 +15,6 @@ import com.eltech.snc.ui.maze.MazeFragment;
 
 import java.util.ArrayList;
 
-import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
 import static com.eltech.snc.ui.maze.MazeFragment.FAT_FINGERS_MARGIN;
 
 /**
@@ -32,6 +28,7 @@ public class FingerLine extends View {
     private ArrayList<Boolean> solved;
     private boolean solvedMaze;
     private boolean stopDrawing;
+    private boolean drawingStarted;
     private EndingEventListener endingEventListener;
     private float finishPointXL;
     private float finishPointXR;
@@ -68,6 +65,7 @@ public class FingerLine extends View {
 
         solvedMaze = false;
         stopDrawing = false;
+        drawingStarted = false;
 
         solved = new ArrayList<>();
 
@@ -90,6 +88,10 @@ public class FingerLine extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if (!drawingStarted) {
+                    MazeFragment.TIMER.start();
+                    drawingStarted = true;
+                }
                 mPath.moveTo(event.getX(), event.getY());
                 return true;
             case MotionEvent.ACTION_MOVE:
@@ -122,6 +124,7 @@ public class FingerLine extends View {
 
         if (finishPointXL <= event.getX() && event.getX() <= finishPointXR &&
                 finishPointYT <= event.getY() && event.getY() <= finishPointYB) {
+            MazeFragment.TIMER.stop();
             stopDrawing = true;
             endingEventListener.onEndingEvent(isMazeSolved());
         }
