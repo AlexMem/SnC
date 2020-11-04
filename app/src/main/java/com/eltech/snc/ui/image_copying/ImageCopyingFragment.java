@@ -35,7 +35,6 @@ public class ImageCopyingFragment extends Fragment {
                                                                     R.drawable.flag, R.drawable.map, R.drawable.pin);
     private static final List<Drawable> patternsDrawables = new ArrayList<>();
 
-    private ImageCopyingViewModel imageCopyingViewModel;
     private TextView resultText;
     private ImageView targetImageView;
     private DrawView drawView;
@@ -44,7 +43,6 @@ public class ImageCopyingFragment extends Fragment {
     @SuppressLint("ClickableViewAccessibility")
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        imageCopyingViewModel = ViewModelProviders.of(this).get(ImageCopyingViewModel.class);
         View root = inflater.inflate(R.layout.fragment_image_copying, container, false);
 
         resultText = root.findViewById(R.id.resultText);

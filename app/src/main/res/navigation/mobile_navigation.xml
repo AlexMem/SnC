@@ -19,7 +19,7 @@
 
     <fragment
             android:id="@+id/nav_labyrinth"
-            android:name="com.eltech.snc.ui.labyrinth.LabyrinthFragment"
+            android:name="com.eltech.snc.ui.maze.MazeFragment"
             android:label="@string/menu_labyrinth"
             tools:layout="@layout/fragment_labyrinth"/>
     <fragment android:id="@+id/nav_platform" android:name="com.eltech.snc.ui.platform.PlatformFragment"
