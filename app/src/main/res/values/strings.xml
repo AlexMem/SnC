@@ -9,7 +9,7 @@
 
     <string name="menu_home">Home</string>
     <string name="menu_copy_image">Copy image</string>
-    <string name="menu_labyrinth">Labyrinth</string>
+    <string name="menu_labyrinth">Maze</string>
     <string name="menu_platform">Platform</string>
 
     <string name="maze_solved">Maze solved!</string>

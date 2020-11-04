@@ -131,6 +131,7 @@ public class MazeFragment extends Fragment implements EndingEventListener, Timer
         if (isMazeSolved) {
             resultTimer.setTextColor(Color.GREEN);
             Toast.makeText(this.getContext(), R.string.maze_solved, Toast.LENGTH_SHORT).show();
+            //((double) TIMER.getMeasure()) / 1000; // send to server
         } else {
             resultTimer.setTextColor(Color.RED);
             Toast.makeText(this.getContext(), R.string.maze_not_solved, Toast.LENGTH_SHORT).show();
