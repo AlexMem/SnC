@@ -136,10 +136,10 @@ public class FingerLine extends View {
     }
 
     public void setFinishPointCoords(float x, float y) {
-        finishPointXL = x - FAT_FINGERS_MARGIN;
-        finishPointXR = x + FAT_FINGERS_MARGIN;
-        finishPointYT = y - FAT_FINGERS_MARGIN;
-        finishPointYB = y + FAT_FINGERS_MARGIN;
+        finishPointXL = x;
+        finishPointXR = x + 75;
+        finishPointYT = y;
+        finishPointYB = y + 75;
     }
 
     public void setEndingEventListener(EndingEventListener endingEventListener) {
