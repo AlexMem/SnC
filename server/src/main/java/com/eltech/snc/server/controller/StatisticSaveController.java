@@ -3,7 +3,6 @@ package com.eltech.snc.server.controller;
 import com.eltech.snc.server.jpa.entity.MazeEntity;
 import com.eltech.snc.server.jpa.entity.RollingBallEntity;
 import com.eltech.snc.server.jpa.entity.StencilEntity;
-import com.eltech.snc.server.jpa.entity.UserEntity;
 import com.eltech.snc.server.services.StatisticService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
