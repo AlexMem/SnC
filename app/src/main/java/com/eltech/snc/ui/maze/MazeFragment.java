@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import com.eltech.snc.R;
 import com.eltech.snc.maze.EndingEventListener;
 import com.eltech.snc.maze.FingerLine;
@@ -142,6 +143,9 @@ public class MazeFragment extends Fragment implements EndingEventListener, Timer
     public void onTimerUpdate(long timeInMillis) {
         long seconds = timeInMillis / 1000;
         long millis = timeInMillis % 1000;
-        getActivity().runOnUiThread(() -> resultTimer.setText(String.format(RESULT_TIMER_FORMAT, seconds, millis)));
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(() -> resultTimer.setText(String.format(RESULT_TIMER_FORMAT, seconds, millis)));
+        }
     }
 }
