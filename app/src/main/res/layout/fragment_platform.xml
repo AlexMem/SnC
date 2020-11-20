@@ -5,12 +5,30 @@
                                                    android:layout_height="match_parent"
                                                    tools:context=".ui.platform.PlatformFragment"
                                                    android:id="@+id/ConstraintLayout">
-    <ImageView
-            android:src="@mipmap/platform_foreground"
-            android:layout_width="0dp"
-            android:layout_height="0dp" android:id="@+id/imageView4"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+    <TextView
+            android:id="@+id/pitchtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="#000"
+            android:text="No Rotation Vector Sensor"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/rolltext" app:layout_constraintBottom_toTopOf="@+id/ballview"/>
+    <TextView
+            android:id="@+id/rolltext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textColor="#000"
+            android:text="No Rotation Vector Sensor"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/pitchtext"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toTopOf="@+id/ballview"/>
+    <com.eltech.snc.ui.platform.BallView
+            android:id="@+id/ballview"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            app:layout_constraintTop_toBottomOf="@+id/rolltext" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintDimensionRatio="1:1"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
