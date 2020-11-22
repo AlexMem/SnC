@@ -1,21 +1,20 @@
 package com.eltech.snc.ui.platform;
 
-import android.util.Log;
-
 class Ball {
     private final float mass = 0.5f;
     // TODO use renderscript for vector coordinates?
     private double slopeForceX;
     private double slopeForceY;
-    private double accelX;
-    private double accelY;
-    private double speedX;
-    private double speedY;
+    public double accelX;
+    public double accelY;
+    public double speedX;
+    public double speedY;
     // position is limited to [0,width], [0,height] properties
     private int width;
     private int height;
     double posX;
     double posY;
+    private BallView ballView;
 
     void calculateForce(float angleX, float angleY) {
         final float g = 12.5f; // gravity
@@ -38,6 +37,18 @@ class Ball {
      * @param executionRate in sec
      */
     void updateVelocity(float executionRate) {
+        if (ballView == null) {
+            return;
+        }
+//
+//        for (BallView.Obstacle obstacle : ballView.getObstacles()) {
+//            if (obstacle.checkCollision(posX, posY, ballView.getRadius())) {
+//                speedX = 0;
+//                speedY = 0;
+//                return;
+//            }
+//        }
+
         speedX += accelX * executionRate;
         speedY += accelY * executionRate;
 //        Log.i("Ball", "speed:" + speedX + ":" + speedY);
@@ -51,6 +62,10 @@ class Ball {
     void resetPosition() {
         posX = width/2;
         posY = height/2;
+        speedX = 0;
+        speedY = 0;
+        accelX = 0;
+        accelY = 0;
     }
 
     /**
@@ -58,6 +73,11 @@ class Ball {
      * @param executionRate in sec
      */
     void updatePosition(float executionRate) {
+        if (ballView.getClippingPoint().checkCollision(posX, posY)) {
+            ballView.getPFParent().clippingPointTouched();
+            ballView.spawnClippingPoint();
+        }
+
         final int pixelsToMove = 150; // how many pixels to move by force
         if( posX < 0 ) {
             posX = 0;
@@ -80,4 +100,7 @@ class Ball {
         posY += pixelsToMove * speedY * executionRate;
     }
 
+    public void setBallView(final BallView ballView) {
+        this.ballView = ballView;
+    }
 }

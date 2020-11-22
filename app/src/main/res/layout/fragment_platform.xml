@@ -13,7 +13,8 @@
             android:textColor="#000"
             android:text="No Rotation Vector Sensor"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/rolltext" app:layout_constraintBottom_toTopOf="@+id/ballview"/>
+            app:layout_constraintEnd_toStartOf="@+id/rolltext" app:layout_constraintBottom_toTopOf="@+id/clippingPCounter"
+            android:visibility="invisible"/>
     <TextView
             android:id="@+id/rolltext"
             android:layout_width="wrap_content"
@@ -22,13 +23,55 @@
             android:textColor="#000"
             android:text="No Rotation Vector Sensor"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/pitchtext"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toTopOf="@+id/ballview"/>
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toTopOf="@+id/clippingPCounter"
+            android:visibility="invisible"/>
+    <TextView
+            android:text="clippingPCounter"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" android:id="@+id/clippingPCounter"
+            android:padding="10dp"
+            android:textColor="#000"
+            app:layout_constraintTop_toBottomOf="@+id/pitchtext" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toTopOf="@+id/resultAvg"
+            android:textAlignment="center" android:textSize="24sp"/>
+    <TextView
+            android:text="resultAvg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" android:id="@+id/resultAvg"
+            android:padding="10dp"
+            android:textColor="#000"
+            app:layout_constraintTop_toBottomOf="@+id/clippingPCounter" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/resultTimer" app:layout_constraintBottom_toTopOf="@+id/ballview"
+            app:layout_constraintVertical_bias="0.0" android:textAlignment="viewStart" android:textSize="18sp"/>
+    <TextView
+            android:text="resultTimer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" android:id="@+id/resultTimer"
+            android:padding="10dp"
+            android:textColor="#000"
+            app:layout_constraintTop_toBottomOf="@+id/clippingPCounter" app:layout_constraintStart_toEndOf="@+id/resultAvg"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toTopOf="@+id/ballview"
+            android:textAlignment="viewStart" android:textSize="18sp"/>
     <com.eltech.snc.ui.platform.BallView
             android:id="@+id/ballview"
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="1"
-            app:layout_constraintTop_toBottomOf="@+id/rolltext" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/resultAvg" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintDimensionRatio="1:1"/>
+    <ImageButton
+            android:src="@android:drawable/ic_media_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/startButton"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/ballview"
+            app:layout_constraintEnd_toStartOf="@+id/refreshButton" app:layout_constraintBottom_toBottomOf="parent"
+            android:scaleX="1.25" android:scaleY="1.25" android:tint="#000000"/>
+    <ImageButton
+            android:src="@android:drawable/stat_notify_sync_noanim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/refreshButton"
+            app:layout_constraintStart_toEndOf="@+id/startButton" app:layout_constraintTop_toBottomOf="@+id/ballview"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+            android:scaleX="1.5" android:scaleY="1.5" android:tint="#000000"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

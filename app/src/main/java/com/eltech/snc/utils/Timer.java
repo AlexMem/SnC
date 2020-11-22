@@ -22,7 +22,9 @@ public class Timer {
         periodTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                timerUpdateEventListener.onTimerUpdate(getMeasure());
+                if (timerUpdateEventListener != null) {
+                    timerUpdateEventListener.onTimerUpdate(getMeasure());
+                }
             }
         }, DELAY, PERIOD);
     }
