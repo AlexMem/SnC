@@ -15,6 +15,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
+    <RelativeLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="5dp"
+        tools:context=".MainActivity">
+    </RelativeLayout>
+    <fragment
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:name="com.eltech.snc.ui.lock.LockFragment"
+            android:id="@+id/lockFragment"/>
     <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
             android:layout_width="wrap_content"
@@ -23,14 +34,4 @@
             android:fitsSystemWindows="true"
             app:headerLayout="@layout/nav_header_main"
             app:menu="@menu/activity_main_drawer"/>
-
-    <RelativeLayout
-        android:id="@+id/main_layout"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="5dp"
-        tools:context=".MainActivity">
-    </RelativeLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

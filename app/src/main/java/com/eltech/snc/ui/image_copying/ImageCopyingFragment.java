@@ -28,8 +28,8 @@ public class ImageCopyingFragment extends Fragment {
     private static final String EXPLANATION = "Обведите изображение не отрывая пальца";
     private static final String BEFORE = "Совпадение ?%";
     private static final String RESULT_FORMAT = "Совпадение %.1f%%";
-    private static final int CALC_STEP = 4;
-    private static final float VALID_ERROR = 2.75f;
+    private static final int CALC_STEP = 3;
+    private static final float VALID_ERROR = 4.25f;
     private static final Random RANDOMIZER = new Random();
     private static final List<Integer> PATTERNS_IDS = Arrays.asList(R.drawable.cloud_thin, R.drawable.flower,
                                                                     R.drawable.flag, R.drawable.map, R.drawable.pin);
