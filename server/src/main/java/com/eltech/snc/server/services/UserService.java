@@ -18,4 +18,9 @@ public class UserService {
         UserEntity save = userRepo.save(user);
         return save.getId();
     }
+
+    public Integer findUser(String name) {
+        UserEntity user = userRepo.findByName(name);
+        return user.getId();
+    }
 }

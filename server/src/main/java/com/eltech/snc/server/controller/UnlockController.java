@@ -22,7 +22,7 @@ public class UnlockController {
     }
 
     @PostMapping(value = "/saveUnlock", consumes = "application/json", produces = "application/json")
-    public Integer createUser(@RequestBody UnlockListEntity unlock) {
+    public Integer createUnlock(@RequestBody UnlockListEntity unlock) {
         List<UnlockEntity> entities = new ArrayList<>();
         for (int i = 0; i < unlock.getPointX().size(); i++) {
             entities.add(UnlockEntity.builder()
