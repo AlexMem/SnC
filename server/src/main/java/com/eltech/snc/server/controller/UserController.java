@@ -19,4 +19,14 @@ public class UserController {
     public Integer createUser(@RequestBody UserEntity name) {
         return userService.createUser(name);
     }
+
+    @PostMapping(value = "/findUser", consumes = "application/json", produces = "application/json")
+    public Integer findUser(@RequestBody UserEntity name) {
+        return userService.findUser(name.getName());
+    }
+
+    @GetMapping(value = "/findUser")
+    public Integer findUser(@RequestParam String name){
+        return userService.findUser(name);
+    }
 }
