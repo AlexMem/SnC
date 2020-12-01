@@ -95,7 +95,7 @@ public class PlatformFragment extends Fragment implements TimerUpdateEventListen
             getActivity().runOnUiThread(() -> {
                 Toast.makeText(getContext(), R.string.ball_trial_finished, Toast.LENGTH_SHORT).show();
                 try {
-                    ServerApi.getInstance().sendMazeModuleResult(((double) avg)/1000, getContext()); // send to server
+                    ServerApi.getInstance().sendBallModuleResult(((double) avg)/1000, getContext()); // send to server
                 } catch (JsonProcessingException | JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getContext(), "Error sending result", Toast.LENGTH_SHORT);

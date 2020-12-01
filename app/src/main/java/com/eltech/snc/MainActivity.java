@@ -1,8 +1,8 @@
 package com.eltech.snc;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,20 +15,14 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.eltech.snc.utils.ServerApi;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.navigation.NavigationView;
-import org.json.JSONException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String SETTINGS_FILE_PATH = "/settings";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -46,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
         View lockButton = findViewById(R.id.lockButton);
         lockButton.setOnClickListener(v -> {
             getSupportFragmentManager().beginTransaction().show(lockFragment).commit();
+//            Integer userId = checkUser();
+//            System.out.println("UserId: " + userId);
         });
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -59,18 +55,43 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        Integer userId = checkUser();
+        System.out.println("UserId: " + userId);
     }
 
-    private void registerUser() {
+    private Integer checkUser() {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(new File(getFilesDir(), SETTINGS_FILE_PATH));
+            String userName = OBJECT_MAPPER.readValue(fileInputStream, String.class);
+            System.out.println("Read username: " + userName);
+            Integer userId = ServerApi.getInstance().getUserId(userName, this);
+            fileInputStream.close();
+            return userId;
+        } catch (FileNotFoundException e) {
+            Log.w("Main", "Settings file not found");
+            e.printStackTrace();
+            return registerUser();
+        } catch (IOException e) {
+            e.printStackTrace();
+            this.finish();
+            System.exit(-1);
+            return null;
+        }
+    }
+
+    private Integer registerUser() {
         UUID userName = UUID.randomUUID();
         try {
             Integer userId = ServerApi.getInstance().createUser(userName.toString(), this);
-            FileOutputStream fileOutputStream = new FileOutputStream("/settings");
+            System.out.println("Settings path: " + getFilesDir() + SETTINGS_FILE_PATH);
+            FileOutputStream fileOutputStream = new FileOutputStream(new File(getFilesDir(), SETTINGS_FILE_PATH));
             fileOutputStream.write(OBJECT_MAPPER.writeValueAsBytes(userName));
             fileOutputStream.close();
-        } catch (JSONException | InterruptedException | ExecutionException | TimeoutException | IOException e) {
+            return userId;
+        } catch (IOException e) {
             e.printStackTrace();
-            AlertDialog.Builder errorDialog = new AlertDialog.Builder(this)
+            AlertDialog.Builder errorDialog = new AlertDialog.Builder(this) // этот кусок не работает скорее всего
                     .setMessage("Error creating user. Closing app ...")
                     .setPositiveButton("OK", (dialog, which) -> {
                         this.finish();
@@ -78,8 +99,8 @@ public class MainActivity extends AppCompatActivity {
                     });
             errorDialog.create();
             DialogFragment newFragment = new DialogFragment();
-            newFragment.show(getSupportFragmentManager(), "missiles");
-
+            newFragment.show(getSupportFragmentManager(), "missiles");        // -----
+            return null;
         }
     }
 }
