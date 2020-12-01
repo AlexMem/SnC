@@ -17,6 +17,9 @@ import android.view.ViewGroup;
 import androidx.fragment.app.FragmentActivity;
 import com.eltech.snc.R;
 import com.eltech.snc.maze.TimerUpdateEventListener;
+import com.eltech.snc.utils.ServerApi;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.json.JSONException;
 
 import java.util.*;
 
@@ -77,7 +80,7 @@ public class PlatformFragment extends Fragment implements TimerUpdateEventListen
         activateButton(refreshButton);
     }
 
-    public void stop(boolean isRefresh) {
+    public void stop(boolean isRefresh, long avg) {
         gameTimer.cancel();
         TIMER.stop();
         ballView.removeClippingPoint();
@@ -89,7 +92,15 @@ public class PlatformFragment extends Fragment implements TimerUpdateEventListen
             getActivity().runOnUiThread(() -> Toast.makeText(getContext(), R.string.ball_trial_refreshed, Toast.LENGTH_SHORT).show());
         } else {
             resultAvg.setTextColor(Color.GREEN);
-            getActivity().runOnUiThread(() -> Toast.makeText(getContext(), R.string.ball_trial_finished, Toast.LENGTH_SHORT).show());
+            getActivity().runOnUiThread(() -> {
+                Toast.makeText(getContext(), R.string.ball_trial_finished, Toast.LENGTH_SHORT).show();
+                try {
+                    ServerApi.getInstance().sendBallModuleResult(((double) avg)/1000, getContext()); // send to server
+                } catch (JsonProcessingException | JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Error sending result", Toast.LENGTH_SHORT);
+                }
+            });
         }
         deactivateButton(refreshButton);
         activateButton(startButton);
@@ -123,7 +134,7 @@ public class PlatformFragment extends Fragment implements TimerUpdateEventListen
 
         refreshButton = root.findViewById(R.id.refreshButton);
         refreshButton.setOnClickListener(v -> {
-            stop(true);
+            stop(true, 0);
         });
         deactivateButton(refreshButton);
         return root;
@@ -182,7 +193,7 @@ public class PlatformFragment extends Fragment implements TimerUpdateEventListen
         ++cPCounter;
         cpCounterText.setText(String.format(CLIPPING_POINT_COUNTER_FORMAT, cPCounter));
         if (cPCounter == CLIPPING_POINTS_TO_FINISH) {
-            stop(false);
+            stop(false, avg);
         }
     }
 

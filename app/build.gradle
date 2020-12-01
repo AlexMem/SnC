@@ -26,6 +26,8 @@ android {
     }
 }
 
+
+
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -41,4 +43,7 @@ dependencies {
     implementation 'com.github.divyanshub024:AndroidDraw:v0.1'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+//    implementation project(":server")
 }

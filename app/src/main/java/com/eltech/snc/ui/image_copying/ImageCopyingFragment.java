@@ -13,11 +13,15 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import com.divyanshu.draw.widget.DrawView;
 import com.eltech.snc.R;
+import com.eltech.snc.utils.ServerApi;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -120,6 +124,13 @@ public class ImageCopyingFragment extends Fragment {
         Bitmap targetImage = targetImageView.getDrawingCache();
         float result = calculateResult(targetImage, drawnImage);
         resultText.setText(String.format(RESULT_FORMAT, 100 * result));
+
+        try {
+            ServerApi.getInstance().sendImageModuleResult(100 * result, getContext());
+        } catch (JsonProcessingException | JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Error sending result", Toast.LENGTH_SHORT);
+        }
     }
 
     private Drawable getRandomPattern() {

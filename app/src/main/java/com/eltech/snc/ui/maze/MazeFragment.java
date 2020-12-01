@@ -17,7 +17,10 @@ import com.eltech.snc.maze.EndingEventListener;
 import com.eltech.snc.maze.FingerLine;
 import com.eltech.snc.maze.MazeView;
 import com.eltech.snc.maze.TimerUpdateEventListener;
+import com.eltech.snc.utils.ServerApi;
 import com.eltech.snc.utils.Timer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.json.JSONException;
 
 import static androidx.constraintlayout.motion.utils.Oscillator.TAG;
 
@@ -132,7 +135,12 @@ public class MazeFragment extends Fragment implements EndingEventListener, Timer
         if (isMazeSolved) {
             resultTimer.setTextColor(Color.GREEN);
             Toast.makeText(this.getContext(), R.string.maze_solved, Toast.LENGTH_SHORT).show();
-            //((double) TIMER.getMeasure()) / 1000; // send to server
+            try {
+                ServerApi.getInstance().sendMazeModuleResult(((double) TIMER.getMeasure())/1000, getContext()); // send to server
+            } catch (JsonProcessingException | JSONException e) {
+                e.printStackTrace();
+                Toast.makeText(getContext(), "Error sending result", Toast.LENGTH_SHORT);
+            }
         } else {
             resultTimer.setTextColor(Color.RED);
             Toast.makeText(this.getContext(), R.string.maze_not_solved, Toast.LENGTH_SHORT).show();
