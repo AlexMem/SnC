@@ -55,7 +55,7 @@ public class StatisticService {
 
         List<RollingBallEntity> ball = rollingBallRepo.findAllByUserId(id);
         if (!ball.isEmpty()) {
-            statistic.setBestBall(ball.stream().map(RollingBallEntity::getResult).min(Comparator.naturalOrder()).orElse(0.0));
+            statistic.setBestBall(ball.stream().map(RollingBallEntity::getResult).max(Comparator.naturalOrder()).orElse(0.0));
             statistic.setAverageBall(ball.stream().map(RollingBallEntity::getResult).reduce(Double::sum).orElse(0.0) / ball.size());
         } else {
             statistic.setAverageBall(0.0);

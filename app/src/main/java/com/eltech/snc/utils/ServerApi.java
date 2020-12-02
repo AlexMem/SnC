@@ -24,6 +24,7 @@ public final class ServerApi {
     private static final String CREATE_USER_URL = "/createUser";
     private static final String FIND_USER_URL = "/findUser";
     private static final String GET_UNLOCK_REGS_RESULT = "/getUnlockRegs";
+    private static final String GET_STATISTICS = "/getStatistic";
     private static final String SAVE_IMAGE_RESULT = "/saveStencilStatistic";
     private static final String SAVE_MAZE_RESULT = "/saveMazeStatistic";
     private static final String SAVE_BALL_RESULT = "/saveRollingBallStatistic";
@@ -215,6 +216,28 @@ public final class ServerApi {
                                                   response -> {
                                                       System.out.println(response);
                                                       onResponse.accept(Integer.valueOf(response));
+                                                  }, null);
+
+        requestQueue.add(request);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void getStatistics(final Context context, final Consumer<StatisticEntity> onResponse) {
+        if (userId == null) {
+            System.err.println("Unknown user");
+            return;
+        }
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        StringRequest request = new StringRequest(Request.Method.GET, serverAddress + GET_STATISTICS + "?id=" + userId,
+                                                  response -> {
+                                                      System.out.println(response);
+                                                      try {
+                                                          StatisticEntity statisticEntity = OBJECT_MAPPER.readValue(response, StatisticEntity.class);
+                                                          onResponse.accept(statisticEntity);
+                                                      } catch (JsonProcessingException e) {
+                                                          e.printStackTrace();
+                                                      }
                                                   }, null);
 
         requestQueue.add(request);

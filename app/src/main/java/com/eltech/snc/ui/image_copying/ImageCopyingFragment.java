@@ -14,11 +14,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.divyanshu.draw.widget.DrawView;
 import com.eltech.snc.R;
+import com.eltech.snc.utils.ServerApi;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +37,7 @@ public class ImageCopyingFragment extends Fragment {
     private static final float VALID_ERROR = 1.5f;
     private static final Random RANDOMIZER = new Random();
     private static final List<Integer> PATTERNS_IDS = Arrays.asList(R.drawable.cloud_thin, R.drawable.flower,
-            R.drawable.flag, R.drawable.map/*, R.drawable.pin*/);
+            R.drawable.flag/*, R.drawable.map/*, R.drawable.pin*/);
     private static final List<Drawable> patternsDrawables = new ArrayList<>();
 
     private TextView resultText;
