@@ -13,9 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+
 import com.divyanshu.draw.widget.DrawView;
 import com.eltech.snc.R;
 
@@ -28,11 +30,11 @@ public class ImageCopyingFragment extends Fragment {
     private static final String EXPLANATION = "Обведите изображение не отрывая пальца";
     private static final String BEFORE = "Совпадение ?%";
     private static final String RESULT_FORMAT = "Совпадение %.1f%%";
-    private static final int CALC_STEP = 3;
-    private static final float VALID_ERROR = 4.25f;
+    private static final int CALC_STEP = 2;
+    private static final float VALID_ERROR = 1.5f;
     private static final Random RANDOMIZER = new Random();
     private static final List<Integer> PATTERNS_IDS = Arrays.asList(R.drawable.cloud_thin, R.drawable.flower,
-                                                                    R.drawable.flag, R.drawable.map, R.drawable.pin);
+            R.drawable.flag, R.drawable.map, R.drawable.pin);
     private static final List<Drawable> patternsDrawables = new ArrayList<>();
 
     private TextView resultText;
@@ -52,6 +54,7 @@ public class ImageCopyingFragment extends Fragment {
         targetImageView.setDrawingCacheEnabled(true);
 
         drawView = root.findViewById(R.id.draw_view);
+        drawView.setStrokeWidth(30);
         drawView.setBackgroundColor(Color.TRANSPARENT);
         drawView.setOnTouchListener((v, event) -> {
             drawView.onTouchEvent(event);
@@ -76,6 +79,7 @@ public class ImageCopyingFragment extends Fragment {
     }
 
     private float calculateResult(final Bitmap expected, final Bitmap drawn) {
+        int count = 0;
         int shouldBePainted = 0;
         int notMissed = 0;
         int missed = 0;
@@ -83,6 +87,7 @@ public class ImageCopyingFragment extends Fragment {
         int height = expected.getHeight();
         for (int x = 0; x < width; x += CALC_STEP) {
             for (int y = 0; y < height; y += CALC_STEP) {
+                count++;
                 int expectedColor = expected.getPixel(x, y);
                 int drawnColor = drawn.getPixel(x, y);
                 if (expectedColor != Color.TRANSPARENT) {
@@ -98,7 +103,9 @@ public class ImageCopyingFragment extends Fragment {
             }
         }
         shouldBePainted /= VALID_ERROR;
-        float result = Math.min(Math.max(notMissed - missed, 0), shouldBePainted) / (float) shouldBePainted;
+//        float result = Math.min(Math.max(notMissed - missed, 0), shouldBePainted) / (float) shouldBePainted;
+        float result = Math.max(((float)notMissed / shouldBePainted) - ((float)missed / notMissed / 2), 0);
+        //float result = ((float) notMissed / shouldBePainted + (float)(count - shouldBePainted - missed) / (count - shouldBePainted) * 0.3F) / 2;
         System.out.println("Should " + shouldBePainted + ", not missed " + notMissed + ", missed " + missed + ", result " + result);
         return result;
     }
