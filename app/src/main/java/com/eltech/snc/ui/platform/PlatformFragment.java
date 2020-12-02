@@ -3,30 +3,36 @@ package com.eltech.snc.ui.platform;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+
 import com.eltech.snc.R;
 import com.eltech.snc.maze.TimerUpdateEventListener;
 import com.eltech.snc.utils.ServerApi;
 import com.fasterxml.jackson.core.JsonProcessingException;
+
 import org.json.JSONException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PlatformFragment extends Fragment implements TimerUpdateEventListener {
     private static final int CLIPPING_POINTS_TO_FINISH = 3;
     private static final String RESULT_TIMER_FORMAT = "Timer: %s,%s s";
-    private static final String AVG_TIMER_FORMAT = "Avg: %s,%s s";
+    private static final String AVG_TIMER_FORMAT = "Avg: %s points";
     private static final String CLIPPING_POINT_COUNTER_FORMAT = "Clipping points touched: %s of a " + CLIPPING_POINTS_TO_FINISH;
     public static final com.eltech.snc.utils.Timer TIMER = new com.eltech.snc.utils.Timer();
     private final float executionRate = 0.00125f; // in sec
@@ -40,6 +46,7 @@ public class PlatformFragment extends Fragment implements TimerUpdateEventListen
     private TextView cpCounterText;
     private Timer gameTimer;
     private List<Long> clippingTimes;
+    private List<BallView.ClippingPoint> clippingPoints;
     private ImageButton startButton;
     private ImageButton refreshButton;
     private int cPCounter;
@@ -66,6 +73,8 @@ public class PlatformFragment extends Fragment implements TimerUpdateEventListen
         ballView.spawnClippingPoint();
         clippingTimes = new ArrayList<>();
         clippingTimes.add(0L);
+        clippingPoints = new ArrayList<>();
+        clippingPoints.add(new BallView.ClippingPoint((int) ball.posX, (int) ball.posY));
         gameTimer = new Timer();
         gameTimer.schedule(new TimerTask() {
             public void run() {
@@ -86,7 +95,7 @@ public class PlatformFragment extends Fragment implements TimerUpdateEventListen
         ballView.removeClippingPoint();
         ball.resetPosition();
         if (isRefresh) {
-            resultAvg.setText(String.format(AVG_TIMER_FORMAT, 0, 0));
+            resultAvg.setText(String.format(AVG_TIMER_FORMAT, "0"));
             resultTimer.setText(String.format(RESULT_TIMER_FORMAT, 0, 0));
             cpCounterText.setText(String.format(CLIPPING_POINT_COUNTER_FORMAT, 0));
             getActivity().runOnUiThread(() -> Toast.makeText(getContext(), R.string.ball_trial_refreshed, Toast.LENGTH_SHORT).show());
@@ -95,7 +104,15 @@ public class PlatformFragment extends Fragment implements TimerUpdateEventListen
             getActivity().runOnUiThread(() -> {
                 Toast.makeText(getContext(), R.string.ball_trial_finished, Toast.LENGTH_SHORT).show();
                 try {
-                    ServerApi.getInstance().sendBallModuleResult(((double) avg)/1000, getContext()); // send to server
+                    double result = 0;
+                    for (int i = 0; i < clippingPoints.size() - 1; i++) {
+                        result += Math.sqrt(Math.pow(clippingPoints.get(i).getX() - clippingPoints.get(i + 1).getX(), 2) +
+                                Math.pow(clippingPoints.get(i).getY() - clippingPoints.get(i + 1).getY(), 2));
+                    }
+                    result = result / clippingTimes.get(clippingPoints.size() - 1) * 1000;
+                    System.out.println("Result " + result);
+                    ServerApi.getInstance().sendBallModuleResult(result, getContext()); // send to server
+
                 } catch (JsonProcessingException | JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getContext(), "Error sending result", Toast.LENGTH_SHORT).show();
@@ -123,7 +140,7 @@ public class PlatformFragment extends Fragment implements TimerUpdateEventListen
         resultAvg = root.findViewById(R.id.resultAvg);
         resultTimer = root.findViewById(R.id.resultTimer);
         cpCounterText = root.findViewById(R.id.clippingPCounter);
-        resultAvg.setText(String.format(AVG_TIMER_FORMAT, 0, 0));
+        resultAvg.setText(String.format(AVG_TIMER_FORMAT, "0"));
         resultTimer.setText(String.format(RESULT_TIMER_FORMAT, 0, 0));
         cpCounterText.setText(String.format(CLIPPING_POINT_COUNTER_FORMAT, 0));
 
@@ -178,16 +195,20 @@ public class PlatformFragment extends Fragment implements TimerUpdateEventListen
 
     public void clippingPointTouched() {
         clippingTimes.add(TIMER.getMeasure());
-        long sum = 0L;
-        for (int i = 1; i < clippingTimes.size(); ++i) {
-            sum += clippingTimes.get(i) - clippingTimes.get(i - 1);
+        clippingPoints.add(ballView.getClippingPoint());
+        double result = 0;
+        for (int i = 0; i < clippingPoints.size() - 1; i++) {
+            result += Math.sqrt(Math.pow(clippingPoints.get(i).getX() - clippingPoints.get(i + 1).getX(), 2) +
+                    Math.pow(clippingPoints.get(i).getY() - clippingPoints.get(i + 1).getY(), 2));
         }
-        long avg = sum / (clippingTimes.size() - 1);
-        long seconds = avg / 1000;
-        long millis = avg % 1000;
+        result /= clippingTimes.get(clippingPoints.size() - 1);
+        System.out.println("Result " + result);
+        long avg = (long) (result * 1000);//sum / (clippingTimes.size() - 1);
+        System.out.println("Message " + avg);
         FragmentActivity activity = getActivity();
         if (activity != null) {
-            activity.runOnUiThread(() -> resultAvg.setText(String.format(AVG_TIMER_FORMAT, seconds, millis)));
+            System.out.println("Message " + avg + String.format(AVG_TIMER_FORMAT, avg));
+            activity.runOnUiThread(() -> resultAvg.setText(String.format(AVG_TIMER_FORMAT, avg)));
         }
         Log.d("Ball", clippingTimes.toString());
         ++cPCounter;
