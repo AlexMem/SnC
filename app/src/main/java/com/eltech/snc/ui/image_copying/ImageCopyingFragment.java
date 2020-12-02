@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.divyanshu.draw.widget.DrawView;
 import com.eltech.snc.R;
@@ -34,13 +33,15 @@ public class ImageCopyingFragment extends Fragment {
     private static final float VALID_ERROR = 1.5f;
     private static final Random RANDOMIZER = new Random();
     private static final List<Integer> PATTERNS_IDS = Arrays.asList(R.drawable.cloud_thin, R.drawable.flower,
-            R.drawable.flag, R.drawable.map, R.drawable.pin);
+            R.drawable.flag, R.drawable.map/*, R.drawable.pin*/);
     private static final List<Drawable> patternsDrawables = new ArrayList<>();
 
     private TextView resultText;
     private ImageView targetImageView;
     private DrawView drawView;
     private ImageButton refreshButton;
+    private Bitmap targetImage;
+    private List<Boolean> pointsHit;
 
     @SuppressLint("ClickableViewAccessibility")
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -60,6 +61,25 @@ public class ImageCopyingFragment extends Fragment {
             drawView.onTouchEvent(event);
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 processImages();
+            } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+                float x = event.getX();
+                float y = event.getY();
+                boolean isMiss = true;
+                targetImage = targetImageView.getDrawingCache();
+                inner:
+                for (int i = -10; i <= 10; i++) {
+                    for (int j = -10; j <= 10; j++) {
+                        int target = targetImage.getPixel((int) x + i, (int) y + i);
+                        if (target != Color.TRANSPARENT) {
+                            isMiss = false;
+                            break inner;
+                        }
+                    }
+                }
+                //System.out.println("Cord " + x + " " + y + " " + isMiss);
+                pointsHit.add(!isMiss);
+            } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                pointsHit = new ArrayList<>();
             }
             return true;
         });
@@ -74,7 +94,7 @@ public class ImageCopyingFragment extends Fragment {
             }
         }
         targetImageView.setImageDrawable(getRandomPattern());
-
+        targetImage = targetImageView.getDrawingCache();
         return root;
     }
 
@@ -102,17 +122,30 @@ public class ImageCopyingFragment extends Fragment {
                 }
             }
         }
-        shouldBePainted /= VALID_ERROR;
-//        float result = Math.min(Math.max(notMissed - missed, 0), shouldBePainted) / (float) shouldBePainted;
-        float result = Math.max(((float)notMissed / shouldBePainted) - ((float)missed / notMissed / 2), 0);
-        //float result = ((float) notMissed / shouldBePainted + (float)(count - shouldBePainted - missed) / (count - shouldBePainted) * 0.3F) / 2;
-        System.out.println("Should " + shouldBePainted + ", not missed " + notMissed + ", missed " + missed + ", result " + result);
-        return result;
+//        shouldBePainted /= VALID_ERROR;
+//        float accuracy = Math.min(Math.max(notMissed - missed, 0), shouldBePainted) / (float) shouldBePainted;
+//        float fullFill = Math.max(((float)notMissed / shouldBePainted) - ((float)missed / notMissed / 2), 0);
+//        float accuracy = ((float) notMissed / shouldBePainted + (float)(count - shouldBePainted - missed) / (count - shouldBePainted) * 0.3F) / 2;
+        float fullFill = (float) notMissed / shouldBePainted;
+        System.out.println("Should " + shouldBePainted + ", not missed " + notMissed + ", missed " + missed + ", accuracy " + fullFill);
+        float accuracy = 0;
+        for (int i = 0; i < pointsHit.size(); i++) {
+            accuracy += pointsHit.get(i) ? 1 : 0;
+        }
+        if (pointsHit.size() != 0) {
+            accuracy /= pointsHit.size();
+        }
+//        System.out.println("Points " + pointsHit);
+
+        System.out.println("Result " + accuracy);
+//        return (float) Math.sqrt((Math.pow(accuracy, 2) + Math.pow(fullFill, 2)) / 2);
+        return (float) Math.min(accuracy * Math.min((fullFill * 1.5), 1), 1);
     }
 
     private void refreshModule() {
         targetImageView.destroyDrawingCache();
         targetImageView.setImageDrawable(getRandomPattern());
+        targetImage = targetImageView.getDrawingCache();
         drawView.clearCanvas();
         drawView.setAlpha(100);
         drawView.setEnabled(true);
