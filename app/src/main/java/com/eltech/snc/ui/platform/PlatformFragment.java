@@ -98,7 +98,7 @@ public class PlatformFragment extends Fragment implements TimerUpdateEventListen
                     ServerApi.getInstance().sendBallModuleResult(((double) avg)/1000, getContext()); // send to server
                 } catch (JsonProcessingException | JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), "Error sending result", Toast.LENGTH_SHORT);
+                    Toast.makeText(getContext(), "Error sending result", Toast.LENGTH_SHORT).show();
                 }
             });
         }

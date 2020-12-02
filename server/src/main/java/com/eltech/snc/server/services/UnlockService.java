@@ -5,6 +5,7 @@ import com.eltech.snc.server.jpa.entity.UnlockEntity;
 import com.eltech.snc.server.jpa.repo.UnlockRepo;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ public class UnlockService {
             entities.get(0).setUniqId(0);
             Integer id = entities.size() > 0 ? repo.save(entities.get(0)).getUniqId() : null;
             if (id != null) {
+//                repo.deleteByUniqId(entities.get(0).getUniqId());
                 entities.get(0).setId(id);
                 repo.save(entities.get(0));
                 for (int i = 1; i < entities.size(); i++) {
@@ -52,17 +54,19 @@ public class UnlockService {
         if (entities.size() > 0) {
             List<UnlockEntity> unlock = repo.findAllByUserId(entities.get(0).getUserId());
             List<Integer> ids = unlock.stream()
-                    .map(UnlockEntity::getId)
-                    .distinct()
-                    .collect(Collectors.toList());
+                                      .map(UnlockEntity::getId)
+                                      .distinct()
+                                      .collect(Collectors.toList());
 
-            //if (ids.size() < 10) return true;
+            if (ids.size() < 10) return true;
 
-            Map<Integer, List<UnlockEntity>> unlockById = unlock.stream().collect(Collectors.groupingBy(UnlockEntity::getId));
+            Map<Integer, List<UnlockEntity>> unlockById = unlock.stream()
+                                                                .filter(unlockEntity -> unlockEntity.getId() != null)
+                                                                .collect(Collectors.groupingBy(UnlockEntity::getId));
 
             List<CompareUnit> compareUnits = unlockById.values().stream()
-                    .map(CompareUnit::create)
-                    .collect(Collectors.toList());
+                                                       .map(CompareUnit::create)
+                                                       .collect(Collectors.toList());
 
             CompareUnit average = CompareUnit.average(compareUnits);
             if (average != null) {
@@ -73,4 +77,12 @@ public class UnlockService {
         return false;
     }
 
+    public Integer getUnlockRegs(Integer userId) {
+        List<UnlockEntity> unlock = repo.findAllByUserId(userId);
+        List<Integer> ids = unlock.stream()
+                                  .map(UnlockEntity::getId)
+                                  .distinct()
+                                  .collect(Collectors.toList());
+        return ids.size();
+    }
 }

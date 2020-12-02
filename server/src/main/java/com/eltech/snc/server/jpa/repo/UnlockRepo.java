@@ -10,4 +10,6 @@ import java.util.List;
 public interface UnlockRepo extends CrudRepository<UnlockEntity, Integer> {
 
     List<UnlockEntity> findAllByUserId(Integer userId);
+
+    void deleteByUniqId(Integer uniqId);
 }

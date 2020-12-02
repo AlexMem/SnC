@@ -7,7 +7,7 @@ public class RollingBallEntity implements Serializable {
     private Integer id;
     private Integer userId;
     private Double result;
-    private LocalDateTime date;
+    private String date;
 
     public RollingBallEntity() {
     }
@@ -36,11 +36,11 @@ public class RollingBallEntity implements Serializable {
         this.result = result;
     }
 
-    public LocalDateTime getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(String date) {
         this.date = date;
     }
 }

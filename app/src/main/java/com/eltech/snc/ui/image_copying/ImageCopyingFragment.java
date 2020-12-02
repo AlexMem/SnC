@@ -129,7 +129,7 @@ public class ImageCopyingFragment extends Fragment {
             ServerApi.getInstance().sendImageModuleResult(100 * result, getContext());
         } catch (JsonProcessingException | JSONException e) {
             e.printStackTrace();
-            Toast.makeText(getContext(), "Error sending result", Toast.LENGTH_SHORT);
+            Toast.makeText(getContext(), "Error sending result", Toast.LENGTH_SHORT).show();
         }
     }
 

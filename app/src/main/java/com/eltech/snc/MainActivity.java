@@ -2,8 +2,11 @@ package com.eltech.snc;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,14 +17,17 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import com.eltech.snc.ui.lock.LockFragment;
 import com.eltech.snc.utils.ServerApi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.*;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String USERNAME_TEXTVIEW_FORMAT = "Username: %s";
     private static final String SETTINGS_FILE_PATH = "/settings";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private AppBarConfiguration mAppBarConfiguration;
@@ -39,7 +45,12 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().hide(lockFragment).commit();
         View lockButton = findViewById(R.id.lockButton);
         lockButton.setOnClickListener(v -> {
-            getSupportFragmentManager().beginTransaction().show(lockFragment).commit();
+            if (ServerApi.getInstance().getUserId() != null) {
+                ((LockFragment) lockFragment).checkUnlockRegs();
+                getSupportFragmentManager().beginTransaction().show(lockFragment).commit();
+            } else {
+                runOnUiThread(() -> Toast.makeText(this, "Нет соединения с сервером!", Toast.LENGTH_SHORT).show());
+            }
 //            Integer userId = checkUser();
 //            System.out.println("UserId: " + userId);
         });
@@ -56,22 +67,28 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-        Integer userId = checkUser();
+//        TextView userNameText = findViewById(R.id.userNameText);
+//        userNameText.setText(String.format(USERNAME_TEXTVIEW_FORMAT, "unknown"));
+
+        Integer userId = checkUser(username -> {
+            TextView userNameText = this.findViewById(R.id.userNameText);
+            userNameText.setText(String.format(USERNAME_TEXTVIEW_FORMAT, username));
+        });
         System.out.println("UserId: " + userId);
     }
 
-    private Integer checkUser() {
+    private Integer checkUser(final Consumer<String> onSuccess) {
         try {
             FileInputStream fileInputStream = new FileInputStream(new File(getFilesDir(), SETTINGS_FILE_PATH));
             String userName = OBJECT_MAPPER.readValue(fileInputStream, String.class);
             System.out.println("Read username: " + userName);
-            Integer userId = ServerApi.getInstance().getUserId(userName, this);
+            Integer userId = ServerApi.getInstance().getUserId(userName, this, onSuccess);
             fileInputStream.close();
             return userId;
         } catch (FileNotFoundException e) {
             Log.w("Main", "Settings file not found");
             e.printStackTrace();
-            return registerUser();
+            return registerUser(onSuccess);
         } catch (IOException e) {
             e.printStackTrace();
             this.finish();
@@ -80,10 +97,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private Integer registerUser() {
+    private Integer registerUser(final Consumer<String> onSuccess) {
         UUID userName = UUID.randomUUID();
         try {
-            Integer userId = ServerApi.getInstance().createUser(userName.toString(), this);
+            Integer userId = ServerApi.getInstance().createUser(userName.toString(), this, onSuccess);
             System.out.println("Settings path: " + getFilesDir() + SETTINGS_FILE_PATH);
             FileOutputStream fileOutputStream = new FileOutputStream(new File(getFilesDir(), SETTINGS_FILE_PATH));
             fileOutputStream.write(OBJECT_MAPPER.writeValueAsBytes(userName));
