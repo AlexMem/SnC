@@ -1,12 +1,11 @@
 package com.eltech.snc.server.controller;
 
-import com.eltech.snc.server.jpa.entity.UnlockEntity;
 import com.eltech.snc.server.entity.UnlockListEntity;
+import com.eltech.snc.server.jpa.entity.UnlockEntity;
 import com.eltech.snc.server.services.UnlockService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
@@ -46,6 +45,11 @@ public class UnlockController {
     @GetMapping(value = "/getUnlockRegs")
     public Integer getUnlockRegs(@RequestParam Integer userId) {
         return unlockService.getUnlockRegs(userId);
+    }
+
+    @GetMapping(value = "/setErr")
+    public Double setErr(@RequestParam String err) {
+        return unlockService.setErr(Double.parseDouble(err));
     }
 
     public static class IdWrapper implements Serializable {

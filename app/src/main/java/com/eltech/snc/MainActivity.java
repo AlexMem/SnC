@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().hide(lockFragment).commit();
         View lockButton = findViewById(R.id.lockButton);
         lockButton.setOnClickListener(v -> {
+//            getSupportFragmentManager().beginTransaction().show(lockFragment).commit();
             if (ServerApi.getInstance().getUserId() != null) {
                 ((LockFragment) lockFragment).checkUnlockRegs();
                 getSupportFragmentManager().beginTransaction().show(lockFragment).commit();

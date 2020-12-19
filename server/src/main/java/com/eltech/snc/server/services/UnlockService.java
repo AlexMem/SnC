@@ -3,18 +3,18 @@ package com.eltech.snc.server.services;
 import com.eltech.snc.server.entity.CompareUnit;
 import com.eltech.snc.server.jpa.entity.UnlockEntity;
 import com.eltech.snc.server.jpa.repo.UnlockRepo;
-import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.StopWatch;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@FieldDefaults(makeFinal = true)
+//@FieldDefaults(makeFinal = true)
 public class UnlockService {
+    private static final int MAX_UNLOCKS = 50;
+    private double err = 200;
     UnlockRepo repo;
 
     public UnlockService(UnlockRepo repo) {
@@ -22,22 +22,31 @@ public class UnlockService {
     }
 
     public Integer save(List<UnlockEntity> entities) {
-        boolean isValid = validate(entities);
+        StopWatch stopwatch = stopwatchStart("UnlockService.save");
+
+        StopWatch repoStopwatch = stopwatchStart("UnlockRepo.findAllByUserId");
+        List<UnlockEntity> unlock = repo.findAllByUserId(entities.get(0).getUserId());
+        stopwatchStop(repoStopwatch);
+
+        boolean isValid = validate(entities, unlock);
+        Integer id = -1;
         if (isValid) {
-            entities.get(0).setUniqId(0);
-            Integer id = entities.size() > 0 ? repo.save(entities.get(0)).getUniqId() : null;
-            if (id != null) {
-//                repo.deleteByUniqId(entities.get(0).getUniqId());
-                entities.get(0).setId(id);
-                repo.save(entities.get(0));
-                for (int i = 1; i < entities.size(); i++) {
-                    entities.get(i).setId(id);
-                    repo.save(entities.get(i));
+            if (unlock.size() < MAX_UNLOCKS) {
+                entities.get(0).setUniqId(0);
+                id = entities.size() > 0 ? repo.save(entities.get(0)).getUniqId() : null;
+                if (id != null) {
+                    for (UnlockEntity entity : entities) {
+                        entity.setId(id);
+                    }
+                    repo.saveAll(entities);
                 }
+            } else {
+                id = 0;
             }
-            return id;
         }
-        return -1;
+        stopwatchStop(stopwatch);
+        System.out.println("------------------------\n");
+        return id;
     }
 
     /**
@@ -50,15 +59,18 @@ public class UnlockService {
      * @param entities
      * @return
      */
-    public boolean validate(List<UnlockEntity> entities) {
+    public boolean validate(List<UnlockEntity> entities, List<UnlockEntity> unlock) {
+        StopWatch stopwatch = stopwatchStart("UnlockService.validate");
         if (entities.size() > 0) {
-            List<UnlockEntity> unlock = repo.findAllByUserId(entities.get(0).getUserId());
             List<Integer> ids = unlock.stream()
                                       .map(UnlockEntity::getId)
                                       .distinct()
                                       .collect(Collectors.toList());
 
-            if (ids.size() < 10) return true;
+            if (ids.size() < 10) {
+                stopwatchStop(stopwatch);
+                return true;
+            }
 
             Map<Integer, List<UnlockEntity>> unlockById = unlock.stream()
                                                                 .filter(unlockEntity -> unlockEntity.getId() != null)
@@ -71,9 +83,12 @@ public class UnlockService {
             CompareUnit average = CompareUnit.average(compareUnits);
             if (average != null) {
                 CompareUnit current = CompareUnit.create(entities);
-                return CompareUnit.compare(current, average, 100);
+                boolean result = CompareUnit.compare(current, average, err);
+                stopwatchStop(stopwatch);
+                return result;
             }
         }
+        stopwatchStop(stopwatch);
         return false;
     }
 
@@ -84,5 +99,24 @@ public class UnlockService {
                                   .distinct()
                                   .collect(Collectors.toList());
         return ids.size();
+    }
+
+    private StopWatch stopwatchStart(String name) {
+        StopWatch stopwatch = new StopWatch(name);
+        stopwatch.start(name);
+        return stopwatch;
+    }
+    private void stopwatchStop(StopWatch stopwatch) {
+        stopwatch.stop();
+        StringBuilder sb = new StringBuilder();
+        StopWatch.TaskInfo lastTaskInfo = stopwatch.getLastTaskInfo();
+        sb.append(lastTaskInfo.getTaskName()).append('\t');
+        sb.append(lastTaskInfo.getTimeMillis()).append(" ms");
+        System.out.println(sb.toString());
+    }
+
+    public double setErr(double err) {
+        this.err = err;
+        return this.err;
     }
 }

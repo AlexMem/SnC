@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 
 @Data
@@ -26,10 +25,11 @@ public class CompareUnit {
         CompareUnit compareUnit = new CompareUnit();
         compareUnit.setId(entities.get(0).getId());
         entities = entities.stream()
-                .sorted(Comparator.comparing(UnlockEntity::getRowNum))
-                .collect(Collectors.toList());
+                           .sorted(Comparator.comparing(UnlockEntity::getRowNum))
+                           .collect(Collectors.toList());
         for (int i = 0; i < entities.size() - 1; i++) {
-            compareUnit.vectors.add(new Vector(new Point(entities.get(i).getPointX(), entities.get(i).getPointY()), new Point(entities.get(i + 1).getPointX(), entities.get(i + 1).getPointY())));
+            compareUnit.vectors.add(new Vector(new Point(entities.get(i).getPointX(), entities.get(i).getPointY()),
+                                               new Point(entities.get(i + 1).getPointX(), entities.get(i + 1).getPointY())));
         }
 
         return compareUnit;
@@ -62,7 +62,4 @@ public class CompareUnit {
         }
         return true;
     }
-
-
-
 }
