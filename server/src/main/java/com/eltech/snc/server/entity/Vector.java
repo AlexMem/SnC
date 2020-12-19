@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,8 +21,13 @@ public class Vector {
         return new Vector(Point.sum(a.getX(), b.getX()), Point.sum(a.getY(), b.getY()));
     }
 
-    public static Vector divide(Vector a, int div) {
-        return new Vector(Point.divide(a.getX(), div), Point.divide(a.getY(), div));
+    public static List<Vector> divide(List<Vector> a, int div) {
+        List<Vector> res = new ArrayList<>(a);
+        for (int i = 0; i < a.size(); i++) {
+            res.get(i).setX(Point.divide(a.get(i).getX(), div));
+            res.get(i).setY(Point.divide(a.get(i).getY(), div));
+        }
+        return res;
     }
 
     public boolean compare(Vector a, double err) {

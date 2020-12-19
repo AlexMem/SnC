@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -19,8 +20,7 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CompareUnit {
     Integer id;
-    Vector first;
-    Vector last;
+    List<Vector> vectors = new ArrayList<>();
 
     public static CompareUnit create(List<UnlockEntity> entities) {
         CompareUnit compareUnit = new CompareUnit();
@@ -28,34 +28,39 @@ public class CompareUnit {
         entities = entities.stream()
                 .sorted(Comparator.comparing(UnlockEntity::getRowNum))
                 .collect(Collectors.toList());
-        int mid = entities.size() > 1 ? entities.size() / 2 : 1;
-        UnlockEntity first = entities.get(0);
-        UnlockEntity middle = entities.get(mid);
-        UnlockEntity last = entities.get(entities.size() - 1);
-        compareUnit.setFirst(new Vector(new Point(first.getPointX(), first.getPointY()), new Point(middle.getPointX(), middle.getPointY())));
-        compareUnit.setLast(new Vector(new Point(middle.getPointX(), middle.getPointY()), new Point(last.getPointX(), last.getPointY())));
+        for (int i = 0; i < entities.size() - 1; i++) {
+            compareUnit.vectors.add(new Vector(new Point(entities.get(i).getPointX(), entities.get(i).getPointY()), new Point(entities.get(i + 1).getPointX(), entities.get(i + 1).getPointY())));
+        }
 
         return compareUnit;
     }
 
-    public static CompareUnit average(List<CompareUnit> list){
+    public static CompareUnit average(List<CompareUnit> list) {
         int count = list.size();
         Optional<CompareUnit> reduce = list.stream().reduce(CompareUnit::sum);
         if (reduce.isPresent()) {
             CompareUnit result = reduce.get();
-            result.setFirst(Vector.divide(result.getFirst(), count));
-            result.setLast(Vector.divide(result.getLast(), count));
+            result.setVectors(Vector.divide(result.getVectors(), count));
             return result;
         }
         return null;
     }
 
     public static CompareUnit sum(CompareUnit a, CompareUnit b) {
-        return new CompareUnit(a.getId(), Vector.sum(a.getFirst(), b.getFirst()), Vector.sum(a.getLast(), b.getLast()));
+        CompareUnit res = new CompareUnit(a.getId(), a.getVectors());
+        for (int i = 0; i < b.getVectors().size(); i++) {
+            res.getVectors().set(i, Vector.sum(a.getVectors().get(i), b.getVectors().get(i)));
+        }
+        return res;
     }
 
     public static boolean compare(CompareUnit a, CompareUnit b, double err) {
-        return a.getFirst().compare(b.getFirst(), err) && a.getLast().compare(b.getLast(), err);
+        for (int i = 0; i < a.getVectors().size(); i++) {
+            if (!a.getVectors().get(i).compare(b.getVectors().get(i), err)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
