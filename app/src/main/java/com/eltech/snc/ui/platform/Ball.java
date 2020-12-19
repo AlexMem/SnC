@@ -73,11 +73,6 @@ class Ball {
      * @param executionRate in sec
      */
     void updatePosition(float executionRate) {
-        if (ballView.getClippingPoint().checkCollision(posX, posY)) {
-            ballView.getPFParent().clippingPointTouched();
-            ballView.spawnClippingPoint();
-        }
-
         final int pixelsToMove = 150; // how many pixels to move by force
         if( posX < 0 ) {
             posX = 0;

@@ -114,6 +114,7 @@ public class BallView extends View {
             paint.setAlpha(75);
             paint.setStyle(Style.FILL);
             canvas.drawCircle(clippingPoint.x, clippingPoint.y, clippingPoint.radius, paint);
+
 //            paint.setColor(Color.RED);
 //            canvas.drawPoint(clippingPoint.x+clippingPoint.radius, clippingPoint.y, paint);
 //            canvas.drawPoint(clippingPoint.x-clippingPoint.radius, clippingPoint.y, paint);
@@ -127,6 +128,8 @@ public class BallView extends View {
         int xpos = Math.min(width - radius - borderWidth_2, Math.max(radius, (int) x + radius + borderWidth_2));
         int ypos = Math.min(height - radius - borderWidth_2, Math.max(radius, (int) y + radius + borderWidth_2));
         canvas.drawCircle(xpos, ypos, radius, paint);
+//        paint.setColor(Color.LTGRAY);
+//        canvas.drawPoint(xpos, ypos, paint);
 
 // 	    int multiplier = 50;
 // 	    paint.setStrokeWidth(5);
@@ -134,6 +137,11 @@ public class BallView extends View {
 // 	    canvas.drawLine(xpos, ypos, xpos + (float) parent.getBall().accelX * multiplier, ypos + (float) parent.getBall().accelY * multiplier, paint);
 //        paint.setColor(Color.YELLOW);
 // 	    canvas.drawLine(xpos, ypos, xpos + (float) parent.getBall().speedX * multiplier, ypos + (float) parent.getBall().speedY * multiplier, paint);
+
+        if (clippingPoint != null && clippingPoint.checkCollision(xpos, ypos)) {
+            parent.clippingPointTouched();
+            spawnClippingPoint();
+        }
     }
 
     public static class Obstacle {
