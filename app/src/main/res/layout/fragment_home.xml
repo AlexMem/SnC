@@ -5,19 +5,177 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.home.HomeFragment">
+        tools:context=".ui.home.HomeFragment" android:alpha="255" android:id="@+id/homeFragment">
 
-    <TextView
-            android:id="@+id/text_home"
+    <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            android:layout_height="match_parent" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent">
+        <Space
+                android:layout_width="match_parent"
+                android:layout_height="25dp"/>
+        <TextView
+                android:text="Statistics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/statisticsHeader" android:textSize="36sp"
+                android:textAlignment="center"/>
+        <Space
+                android:layout_width="match_parent"
+                android:layout_height="25dp"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:text="Image copy"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:id="@+id/imageCopyText" android:layout_weight="0.5"
+                    android:textAlignment="center" android:textSize="24sp"/>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:layout_weight="0.5">
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" android:layout_weight="1">
+                    <TextView
+                            android:text="Average:"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/imageCopyAvgText"
+                            android:layout_weight="1" android:textSize="18sp"/>
+                    <TextView
+                            android:text="-"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/imageCopyAvgValueText"
+                            android:layout_weight="1" android:textSize="18sp"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" android:layout_weight="1">
+                    <TextView
+                            android:text="Best:"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/imageCopyBestText"
+                            android:layout_weight="1" android:textSize="18sp"/>
+                    <TextView
+                            android:text="-"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/imageCopyBestValueText"
+                            android:layout_weight="1" android:textSize="18sp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:text="Maze"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:id="@+id/mazeText" android:layout_weight="0.5"
+                    android:textAlignment="center" android:textSize="24sp"/>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:layout_weight="0.5">
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" android:layout_weight="1">
+                    <TextView
+                            android:text="Average:"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/mazeAvgText"
+                            android:layout_weight="1" android:textSize="18sp"/>
+                    <TextView
+                            android:text="-"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/mazeAvgValueText"
+                            android:layout_weight="1" android:textSize="18sp"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" android:layout_weight="1">
+                    <TextView
+                            android:text="Best:"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/mazeBestText"
+                            android:layout_weight="1" android:textSize="18sp"/>
+                    <TextView
+                            android:text="-"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/mazeBestValueText"
+                            android:layout_weight="1" android:textSize="18sp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:text="Platform"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:id="@+id/platformText" android:layout_weight="0.5"
+                    android:textAlignment="center" android:textSize="24sp"/>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:layout_weight="0.5">
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" android:layout_weight="1">
+                    <TextView
+                            android:text="Average:"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/platformAvgText"
+                            android:layout_weight="1" android:textSize="18sp"/>
+                    <TextView
+                            android:text="-"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/platformAvgValueText"
+                            android:layout_weight="1" android:textSize="18sp"/>
+                </LinearLayout>
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" android:layout_weight="1">
+                    <TextView
+                            android:text="Best:"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/platformBestText"
+                            android:layout_weight="1" android:textSize="18sp"/>
+                    <TextView
+                            android:text="-"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/platformBestValueText"
+                            android:layout_weight="1" android:textSize="18sp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+        <Space
+                android:layout_width="match_parent"
+                android:layout_height="15dp"/>
+        <TextView
+                android:id="@+id/text_home"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:visibility="invisible"/>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

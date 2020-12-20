@@ -16,7 +16,18 @@ public class UserController {
     }
 
     @PostMapping(value = "/createUser", consumes = "application/json", produces = "application/json")
-    public Integer createUser(@RequestBody UserEntity name) {
-        return userService.createUser(name);
+    public UserEntity createUser(@RequestBody UserEntity name) {
+        name.setId(userService.createUser(name));
+        return name;
+    }
+
+    @PostMapping(value = "/findUser", consumes = "application/json", produces = "application/json")
+    public Integer findUser(@RequestBody UserEntity name) {
+        return userService.findUser(name.getName());
+    }
+
+    @GetMapping(value = "/findUser")
+    public Integer findUser(@RequestParam String name){
+        return userService.findUser(name);
     }
 }
