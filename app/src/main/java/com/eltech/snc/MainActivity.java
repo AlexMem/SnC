@@ -22,10 +22,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.*;
+import java.util.Properties;
 import java.util.UUID;
 import java.util.function.Consumer;
 
 public class MainActivity extends AppCompatActivity {
+    public static final Properties properties = new Properties();
     private static final String USERNAME_TEXTVIEW_FORMAT = "Username: %s";
     private static final String SETTINGS_FILE_PATH = "/settings";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -39,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        try(InputStream is = getAssets().open("config.properties")){
+            properties.load(is);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
 
         Fragment lockFragment = getSupportFragmentManager().findFragmentById(R.id.lockFragment);
         getSupportFragmentManager().beginTransaction().hide(lockFragment).commit();
