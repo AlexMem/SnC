@@ -6,10 +6,13 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.*;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.eltech.snc.MainActivity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,9 +32,10 @@ public final class ServerApi {
     private static final String SAVE_MAZE_RESULT = "/saveMazeStatistic";
     private static final String SAVE_BALL_RESULT = "/saveRollingBallStatistic";
     private static final String SAVE_UNLOCK_RESULT = "/saveUnlock";
+    private static final String SERVER_API_URL_PROPERTY_NAME = "server.api.url";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private final String serverAddress = "http://192.168.1.25:8080";
+    private final String serverAddress;
     private final ThreadPoolExecutor executor = new ThreadPoolExecutor(0, 2,
                                                                        30, TimeUnit.SECONDS,
                                                                        new ArrayBlockingQueue<>(10));
@@ -40,14 +44,16 @@ public final class ServerApi {
     private String username;
     private boolean isNewUser = false;
 
-    private ServerApi() {
+    private ServerApi(final String serverAddress) {
+        this.serverAddress = serverAddress;
     }
 
     public static ServerApi getInstance() {
         if (instance == null) {
             synchronized (ServerApi.class) {
                 if (instance == null) {
-                    instance = new ServerApi();
+                    String serverAddress = MainActivity.properties.getProperty(SERVER_API_URL_PROPERTY_NAME);
+                    instance = new ServerApi(serverAddress);
                 }
             }
         }
