@@ -30,7 +30,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class PlatformFragment extends Fragment implements TimerUpdateEventListener {
-    private static final int CLIPPING_POINTS_TO_FINISH = 3;
+    private static final int CLIPPING_POINTS_TO_FINISH = 5;
     private static final String RESULT_TIMER_FORMAT = "Timer: %s,%s s";
     private static final String AVG_TIMER_FORMAT = "Avg: %s points";
     private static final String CLIPPING_POINT_COUNTER_FORMAT = "Clipping points touched: %s of a " + CLIPPING_POINTS_TO_FINISH;

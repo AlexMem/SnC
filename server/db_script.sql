@@ -55,7 +55,7 @@ create table rolling_ball
 	date_time timestamp
 );
 
-comment on table rolling_ball is 'Катать шар';
+comment on table rolling_ball is 'Платформа';
 
 alter table rolling_ball owner to postgres;
 
