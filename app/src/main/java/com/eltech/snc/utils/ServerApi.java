@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public final class ServerApi {
@@ -40,7 +41,7 @@ public final class ServerApi {
                                                                        30, TimeUnit.SECONDS,
                                                                        new ArrayBlockingQueue<>(10));
 
-    private Integer userId;
+    private Integer userId = -1;
     private String username;
     private boolean isNewUser = false;
 
@@ -74,7 +75,7 @@ public final class ServerApi {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public Integer createUser(final String userName, final Context context, final Consumer<String> onSuccess) {
+    public Integer createUser(final String userName, final Context context, final BiConsumer<Integer, String> onSuccess) {
         executor.submit(() -> {
             try {
                 UserEntity userEntity = new UserEntity();
@@ -90,7 +91,7 @@ public final class ServerApi {
                 System.out.println("Created userId: " + userId);
                 username = userName;
                 isNewUser = true;
-                onSuccess.accept(username);
+                onSuccess.accept(userId, username);
             } catch (JSONException | InterruptedException | ExecutionException | TimeoutException | JsonProcessingException e) {
                 e.printStackTrace();
             }
@@ -99,15 +100,15 @@ public final class ServerApi {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public Integer getUserId(final String userName, final Context context, final Consumer<String> onSuccess) {
+    public Integer getUserId(final String userName, final Context context, final BiConsumer<Integer, String> onSuccess) {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         StringRequest request = new StringRequest(Request.Method.GET, serverAddress + FIND_USER_URL + "?name=" + userName,
                                                   response -> {
                                                       System.out.println("Got userId: " + response);
                                                       userId = Integer.valueOf(response);
                                                       username = userName;
-                                                      onSuccess.accept(username);
-                                                  }, error -> System.out.println("Username " + userName + " is unknown"));
+                                                      onSuccess.accept(userId, username);
+                                                  }, error -> System.out.println("Username " + userName + " is unknown or server error"));
         requestQueue.add(request);
         return userId;
     }

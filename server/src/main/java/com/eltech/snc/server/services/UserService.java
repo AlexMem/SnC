@@ -21,6 +21,10 @@ public class UserService {
 
     public Integer findUser(String name) {
         UserEntity user = userRepo.findByName(name);
+        if (user == null) {
+            user = new UserEntity();
+            user.setId(-1);
+        }
         return user.getId();
     }
 }

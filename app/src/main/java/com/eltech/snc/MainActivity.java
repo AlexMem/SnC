@@ -24,6 +24,7 @@ import com.google.android.material.navigation.NavigationView;
 import java.io.*;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         View lockButton = findViewById(R.id.lockButton);
         lockButton.setOnClickListener(v -> {
 //            getSupportFragmentManager().beginTransaction().show(lockFragment).commit();
-            if (ServerApi.getInstance().getUserId() != null) {
+            if (ServerApi.getInstance().getUserId() != -1) {
                 ((LockFragment) lockFragment).checkUnlockRegs();
                 getSupportFragmentManager().beginTransaction().show(lockFragment).commit();
             } else {
@@ -78,14 +79,21 @@ public class MainActivity extends AppCompatActivity {
 //        TextView userNameText = findViewById(R.id.userNameText);
 //        userNameText.setText(String.format(USERNAME_TEXTVIEW_FORMAT, "unknown"));
 
-        Integer userId = checkUser(username -> {
+        BiConsumer<Integer, String> onSuccess = (_userId, _username) -> {
             TextView userNameText = this.findViewById(R.id.userNameText);
-            userNameText.setText(String.format(USERNAME_TEXTVIEW_FORMAT, username));
-        });
+            userNameText.setText(String.format(USERNAME_TEXTVIEW_FORMAT, _username));
+            if (_userId == -1) {
+                registerUser(_username, (__userId, __username) -> {
+                    TextView _userNameText = this.findViewById(R.id.userNameText);
+                    _userNameText.setText(String.format(USERNAME_TEXTVIEW_FORMAT, __username));
+                });
+            }
+        };
+        Integer userId = checkUser(onSuccess);
         System.out.println("UserId: " + userId);
     }
 
-    private Integer checkUser(final Consumer<String> onSuccess) {
+    private Integer checkUser(final BiConsumer<Integer, String> onSuccess) {
         try {
             FileInputStream fileInputStream = new FileInputStream(new File(getFilesDir(), SETTINGS_FILE_PATH));
             String userName = OBJECT_MAPPER.readValue(fileInputStream, String.class);
@@ -96,7 +104,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (FileNotFoundException e) {
             Log.w("Main", "Settings file not found");
             e.printStackTrace();
-            return registerUser(onSuccess);
+            UUID userName = UUID.randomUUID();
+            return registerUser(userName.toString(), onSuccess);
         } catch (IOException e) {
             e.printStackTrace();
             this.finish();
@@ -105,10 +114,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private Integer registerUser(final Consumer<String> onSuccess) {
-        UUID userName = UUID.randomUUID();
+    private Integer registerUser(final String userName, final BiConsumer<Integer, String> onSuccess) {
         try {
-            Integer userId = ServerApi.getInstance().createUser(userName.toString(), this, onSuccess);
+            Integer userId = ServerApi.getInstance().createUser(userName, this, onSuccess);
             System.out.println("Settings path: " + getFilesDir() + SETTINGS_FILE_PATH);
             FileOutputStream fileOutputStream = new FileOutputStream(new File(getFilesDir(), SETTINGS_FILE_PATH));
             fileOutputStream.write(OBJECT_MAPPER.writeValueAsBytes(userName));
