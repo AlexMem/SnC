@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment {
         platformAvgText = root.findViewById(R.id.platformAvgValueText);
         platformBestText = root.findViewById(R.id.platformBestValueText);
 
-        if (ServerApi.getInstance().getUserId() == null) {
+        if (ServerApi.getInstance().getUserId() == -1) {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
