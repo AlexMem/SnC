@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "rolling_ball")
+@Table(name = "rolling_ball_1")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RollingBallEntity implements Serializable {
     @Id

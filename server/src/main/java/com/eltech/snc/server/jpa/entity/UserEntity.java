@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "users")
+@Table(name = "users_1")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserEntity implements Serializable {
     @Id
