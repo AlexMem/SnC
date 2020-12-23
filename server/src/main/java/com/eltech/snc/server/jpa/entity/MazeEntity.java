@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class MazeEntity implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "maze")
-    @SequenceGenerator(name = "maze", sequenceName = "maze_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "maze", sequenceName = "maze_1_id_seq", allocationSize = 1)
     @Column(name = "id")
     Integer id;
 

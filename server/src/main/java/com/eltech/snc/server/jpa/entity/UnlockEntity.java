@@ -22,7 +22,7 @@ public class UnlockEntity implements Serializable {
     @Id
     @Column(name = "uniq_id")
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "unlock")
-    @SequenceGenerator(name = "unlock", sequenceName = "unlock_statistic_uniq_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "unlock", sequenceName = "unlock_statistic_1_uniq_id_seq", allocationSize = 1)
     Integer uniqId;
 
 //    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "unlock")
