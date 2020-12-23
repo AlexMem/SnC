@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class StencilEntity implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "stencil")
-    @SequenceGenerator(name = "stencil", sequenceName = "stencil_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "stencil", sequenceName = "stencil_1_id_seq", allocationSize = 1)
     @Column(name = "id")
     Integer id;
 

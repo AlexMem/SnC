@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class RollingBallEntity implements Serializable {
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "ball")
-    @SequenceGenerator(name = "ball", sequenceName = "rolling_ball_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "ball", sequenceName = "rolling_ball_1_id_seq", allocationSize = 1)
     @Column(name = "id")
     Integer id;
 
