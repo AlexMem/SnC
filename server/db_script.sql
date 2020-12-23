@@ -64,7 +64,7 @@ create unique index rolling_ball_id_uindex
 
 create table unlock_statistic
 (
-	id serial,
+	id integer,
 	row_num integer,
 	user_id integer not null,
 	point_x double precision,

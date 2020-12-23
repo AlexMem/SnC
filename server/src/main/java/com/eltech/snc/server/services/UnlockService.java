@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 @Service
 //@FieldDefaults(makeFinal = true)
 public class UnlockService {
-    private static final int MAX_UNLOCKS = 50;
-    private double err = 200;
+    private static final int MAX_UNLOCKS = 500;
+    private double err = 150;
     UnlockRepo repo;
 
     public UnlockService(UnlockRepo repo) {
