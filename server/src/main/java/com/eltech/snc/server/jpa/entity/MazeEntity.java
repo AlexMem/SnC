@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "maze")
+@Table(name = "maze_1")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class MazeEntity implements Serializable {
     @Id

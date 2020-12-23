@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Table(name = "unlock_statistic")
+@Table(name = "unlock_statistic_1")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UnlockEntity implements Serializable {
 

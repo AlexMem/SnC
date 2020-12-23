@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "stencil")
+@Table(name = "stencil_1")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StencilEntity implements Serializable {
     @Id
